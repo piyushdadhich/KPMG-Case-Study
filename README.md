@@ -80,6 +80,28 @@ assesses it directly. Excluding it was a scope decision, recorded here.
   "collaboration" signal. Each exclusion traces to a policy, fairness,
   privacy, or scope reason stated in this README.
 
+## How reviewers differentiate
+
+The tool levels *formats*, not *candidates*. Once submissions are rendered as
+evidence against the same six signals, the reviewer differentiates on what the
+evidence shows: its **strength** (demonstrated > described > asserted) and its
+**coverage** across the signals. That judgment is the reviewer's to make and to
+defend in writing.
+
+The gap-as-probe rule is a constraint on the **system**, not on the reviewer.
+It stops the AI (and the UI) from converting a silent extraction miss into a
+penalty — but a genuine unknown is still a legitimate basis for a human to
+**Hold** or **Decline**. Interviews are scarce; a probe is earned by evidence
+that already justifies the interview, not spent chasing absence. **Decline is a
+valid, recordable outcome** — the audit log treats it the same as any other.
+
+**Next step (with more time):** per-signal *human* ratings, entered by the
+reviewer, combined **mechanically** (not holistically) and viewable across the
+candidate pool — the Kuncel et al. (2013) finding that structured, mechanical
+combination beats holistic judgment, applied to the humans' own assessments.
+The AI still never scores, ranks, or recommends; only the reviewers' explicit
+ratings are aggregated, and only by a fixed rule they can inspect.
+
 ## Evidence base
 
 - Structured, mechanically combined evaluation outperforms holistic judgment,
