@@ -251,11 +251,13 @@ window.WORKBENCH_DATA = __DATA__;
     const evmap = `<div class="evmap" role="group" aria-label="Evidence map for this submission — which signals have evidence and which are gaps to probe">`
       + c.extraction.signals.map(sig=>{
           const has = sig.evidence.length>0;
-          return `<button class="emk ${has?'has':'gap'}" data-sig="${sig.signal_id}" `
-            + `aria-label="${sig.signal_id}: ${has?'evidence found':'gap — probe at interview'}">`
-            + `<span class="emdot">${has?'●':'○'}</span><span>${sig.signal_id}</span></button>`;
+          const rr = D.rubric.find(x=>x.id===sig.signal_id);
+          const short = esc(rr.short_name), full = esc(rr.name);
+          return `<button class="emk ${has?'has':'gap'}" data-sig="${sig.signal_id}" title="${full}" `
+            + `aria-label="${sig.signal_id} ${short}: ${has?'evidence found':'no evidence — ask at interview'}">`
+            + `<span class="emdot">${has?'●':'○'}</span><span>${short}</span></button>`;
         }).join("")
-      + `<span class="emlegend">● evidence found · ○ gap — probe at interview</span></div>`;
+      + `<span class="emlegend">● evidence found · ○ no evidence — ask at interview</span></div>`;
     $("#candidate").innerHTML = evmap + c.extraction.signals.map(sig=>{
       const r = D.rubric.find(x=>x.id===sig.signal_id);
       const evs = sig.evidence.map((ev,i)=>{

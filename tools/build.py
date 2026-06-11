@@ -16,18 +16,20 @@ r = subprocess.run([sys.executable, str(ROOT / "tools" / "validate_quotes.py")])
 if r.returncode != 0:
     sys.exit("Build blocked: grounding validation failed.")
 
+# short_name is the human label shown on the evidence-map chips (Amendment B);
+# the rubric here is the single source of truth — never hard-code it in the template.
 RUBRIC = [
-    {"id": "S1", "name": "Builder Evidence",
+    {"id": "S1", "name": "Builder Evidence", "short_name": "Builder",
      "definition": "Makes real things, not descriptions of things — code, configuration, low-code, APIs, orchestration; tests and hardens what was built."},
-    {"id": "S2", "name": "Workflow & Systems Thinking",
+    {"id": "S2", "name": "Workflow & Systems Thinking", "short_name": "Workflow",
      "definition": "Designs multi-step processes around the model: human-AI handoffs, decision boundaries, deliberate autonomy levels, failure paths."},
-    {"id": "S3", "name": "End-to-End Ownership",
+    {"id": "S3", "name": "End-to-End Ownership", "short_name": "Ownership",
      "definition": "Carries a problem from definition to a working system people actually use — deployment, adoption, maintenance included."},
-    {"id": "S4", "name": "Ambiguity → Direction",
+    {"id": "S4", "name": "Ambiguity → Direction", "short_name": "Ambiguity",
      "definition": "Enters undefined problems, makes explicit assumptions, commits to a scoped direction, tests and iterates."},
-    {"id": "S5", "name": "Responsible AI Judgment",
+    {"id": "S5", "name": "Responsible AI Judgment", "short_name": "Responsible AI",
      "definition": "Treats risk, governance, ethics and trust as design constraints; evaluates AI behavior rather than only shipping it."},
-    {"id": "S6", "name": "Enterprise Fluency & Value Targeting",
+    {"id": "S6", "name": "Enterprise Fluency & Value Targeting", "short_name": "Enterprise Value",
      "definition": "Understands how organizations operate; aims AI at pain points with tangible value; names stakeholders and constraints."},
 ]
 
