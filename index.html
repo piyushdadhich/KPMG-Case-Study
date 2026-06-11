@@ -50,7 +50,8 @@
   .tab{border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:8px 16px;font-weight:500;color:var(--ink-soft)}
   .tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
   .tab .fmt{display:block;font-size:11px;font-weight:400;opacity:.75}
-  .order-note{font-size:12px;color:var(--ink-soft);margin:-6px 0 14px}
+  .context-line{font-size:13.5px;color:var(--ink);margin:0 0 4px;max-width:74ch}
+  .order-note{font-size:12px;color:var(--ink-soft);margin:0 0 14px}
 
   .sigblock{margin-bottom:14px}
   .sigblock>header{display:flex;align-items:baseline;gap:10px;padding:4px 2px 8px}
@@ -100,6 +101,36 @@
 
   footer.site{border-top:1px solid var(--line);background:var(--panel);padding:18px 28px;font-size:12.5px;color:var(--ink-soft)}
   footer.site .inner{max-width:1240px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 24px}
+
+  /* A1 — orientation strip (under the disclosure banner) */
+  .orient{max-width:1240px;margin:0 auto;display:flex;gap:10px 18px;flex-wrap:wrap;
+    background:var(--panel);border:1px solid #C8D6F5;border-top:none;
+    border-radius:0 0 var(--radius) var(--radius);padding:12px 16px}
+  .orient .ostep{flex:1 1 240px;display:flex;gap:9px;align-items:flex-start;font-size:12.5px;color:var(--ink-soft);line-height:1.45}
+  .orient .ostep b{color:var(--ink);font-weight:600}
+  .orient .onum{flex:none;width:20px;height:20px;border-radius:99px;background:var(--blue);color:#fff;
+    font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+
+  /* A3 — per-candidate evidence map (strictly binary: presence/absence only) */
+  .evmap{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 2px 16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .emk{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--panel);
+    border-radius:99px;padding:4px 10px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft)}
+  .emk.has{color:var(--green);border-color:#BBDCC9}
+  .emk.gap{color:var(--amber);border-color:#E9C9A0}
+  .emk .emdot{font-size:11px;line-height:1}
+  .emlegend{font-size:11.5px;color:var(--ink-soft);margin-left:4px}
+
+  /* A4 — rail de-clutter: collapsible rubric + single strength legend row */
+  .rsig{border-top:1px dashed var(--line)}
+  .rsig:first-of-type{border-top:none}
+  .rsig summary{cursor:pointer;list-style:none;padding:8px 0;font-size:13.5px;color:var(--ink)}
+  .rsig summary::-webkit-details-marker{display:none}
+  .rsig summary::before{content:"\25B8";color:var(--ink-soft);margin-right:6px;font-size:11px}
+  .rsig[open] summary::before{content:"\25BE"}
+  .rsig p{margin:0 0 8px 17px;color:var(--ink-soft);font-size:13px}
+  .legend-row{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft);line-height:2.1}
+  .legend-row .chip{margin:0 2px}
+  .legend-row b{color:var(--amber)}
 </style>
 </head>
 <body>
@@ -113,6 +144,11 @@
     <span>AI is used in this process to extract and organize evidence from candidate submissions against job-derived signals.
     It does not score, rank, compare, or recommend candidates. Every hiring judgment is made and recorded by a human reviewer.</span>
   </div>
+  <div class="orient" aria-label="How this works">
+    <div class="ostep"><span class="onum">1</span><span><b>AI extracts</b> verbatim evidence from each submission against six job-derived signals — it never scores or ranks.</span></div>
+    <div class="ostep"><span class="onum">2</span><span><b>You review</b> evidence — every quote is verified against its source; a missing signal becomes an interview question, not a penalty.</span></div>
+    <div class="ostep"><span class="onum">3</span><span><b>You decide</b> — written rationale required; every decision is timestamped into an exportable audit log.</span></div>
+  </div>
 </header>
 
 <div class="wrap">
@@ -122,17 +158,11 @@
       <h2>Signal rubric — derived from the AI Builder job description</h2>
       <div id="rubric"></div>
     </div>
-    <div class="card" style="font-size:12.5px;color:var(--ink-soft)">
-      <b style="color:var(--ink)">How to read evidence strength</b><br>
-      <span class="chip demonstrated" style="margin:6px 4px 0 0">demonstrated</span> verifiable built thing or named concrete outcome<br>
-      <span class="chip described" style="margin:6px 4px 0 0">described</span> concrete first-person account, not independently verifiable<br>
-      <span class="chip asserted" style="margin:6px 4px 0 0">asserted</span> claim without supporting specifics<br><br>
-      A signal with no evidence produces an <b style="color:var(--amber)">interview probe</b>, never a penalty — absence of evidence in one submission format is not absence of skill.
-    </div>
   </aside>
 
   <main>
     <div class="tabs" role="tablist" aria-label="Candidates" id="tabs"></div>
+    <p class="context-line">Three synthetic candidates from deliberately incomparable backgrounds — a repo README, a results memo, a portfolio narrative. Same six signals. Compare evidence, not formats.</p>
     <p class="order-note">Candidate order is randomized on each load to reduce position anchoring.</p>
     <section id="candidate"></section>
 
@@ -181,7 +211,12 @@ window.WORKBENCH_DATA = {"rubric": [{"id": "S1", "name": "Builder Evidence", "de
 
   /* ---------- rubric rail ---------- */
   $("#rubric").innerHTML = D.rubric.map(r =>
-    `<div class="sig"><b>${r.id} · ${esc(r.name)}</b><span>${esc(r.definition)}</span></div>`).join("");
+    `<details class="rsig"><summary><b>${r.id}</b> · ${esc(r.name)}</summary><p>${esc(r.definition)}</p></details>`).join("")
+    + `<div class="legend-row">Strength: `
+    + `<span class="chip demonstrated">demonstrated</span> verifiable · `
+    + `<span class="chip described">described</span> first-hand · `
+    + `<span class="chip asserted">asserted</span> claim. `
+    + `A signal with no evidence becomes an <b>interview probe</b>, never a penalty.</div>`;
 
   /* ---------- grounding check (in-browser, deterministic) ---------- */
   let total=0, bad=0;
@@ -211,7 +246,17 @@ window.WORKBENCH_DATA = {"rubric": [{"id": "S1", "name": "Builder Evidence", "de
 
   function renderCandidate(){
     const c = D.candidates.find(x=>x.id===active);
-    $("#candidate").innerHTML = c.extraction.signals.map(sig=>{
+    // A3: strictly-binary evidence map — presence (●) or gap (○) per signal.
+    // No counts, no strength aggregation: nothing that reads as a score (rule 1).
+    const evmap = `<div class="evmap" role="group" aria-label="Evidence map for this submission — which signals have evidence and which are gaps to probe">`
+      + c.extraction.signals.map(sig=>{
+          const has = sig.evidence.length>0;
+          return `<button class="emk ${has?'has':'gap'}" data-sig="${sig.signal_id}" `
+            + `aria-label="${sig.signal_id}: ${has?'evidence found':'gap — probe at interview'}">`
+            + `<span class="emdot">${has?'●':'○'}</span><span>${sig.signal_id}</span></button>`;
+        }).join("")
+      + `<span class="emlegend">● evidence found · ○ gap — probe at interview</span></div>`;
+    $("#candidate").innerHTML = evmap + c.extraction.signals.map(sig=>{
       const r = D.rubric.find(x=>x.id===sig.signal_id);
       const evs = sig.evidence.map((ev,i)=>{
         const ok = grounded[c.id][sig.signal_id+"_"+i];
@@ -231,9 +276,13 @@ window.WORKBENCH_DATA = {"rubric": [{"id": "S1", "name": "Builder Evidence", "de
         : (sig.gaps.length? `<div class="gapcard"><div class="gtitle">Gap to probe</div>
             <p>${esc(sig.gaps[0])}</p>
             <div class="probe"><b>Ask at interview:</b> ${esc(sig.interview_probes[0]||"")}</div></div>` : "");
-      return `<div class="sigblock"><header><span class="sid">${sig.signal_id}</span><h3>${esc(r.name)}</h3></header>${evs}${gap}</div>`;
+      return `<div class="sigblock" id="sig-${sig.signal_id}"><header><span class="sid">${sig.signal_id}</span><h3>${esc(r.name)}</h3></header>${evs}${gap}</div>`;
     }).join("");
     $("#candidate").querySelectorAll(".srclink").forEach(b=>b.addEventListener("click",()=>openSource(b.dataset.cid, decodeURIComponent(b.dataset.q))));
+    $("#candidate").querySelectorAll(".emk").forEach(b=>b.addEventListener("click",()=>{
+      const el=document.getElementById("sig-"+b.dataset.sig);
+      if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+    }));
   }
 
   /* ---------- source modal ---------- */
