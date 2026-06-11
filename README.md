@@ -191,3 +191,31 @@ Inter-rater reliability study → per-format extraction QA → counterfactual
 swap-test harness → durable storage with access control → reviewer
 calibration sessions → an ambiguity-simulation module that generates the
 candidate's working transcript as a richer evidence source.
+
+### Beyond text: artifact readers
+
+The verbatim quote is the text-specific implementation of a general rule:
+every evidence claim must carry a checkable pointer into its source.
+Generalizing the pointer extends the system to non-text artifacts without
+changing the architecture:
+
+- **Git repo:** pointer = file path + line range + commit hash; verified
+  mechanically (stronger than prose). A deterministic structural pass (tests
+  present, CI present, commit history) yields "demonstrated" evidence with no
+  LLM involved.
+- **Workflow diagram / design file:** a vision model produces a structured
+  transcription (nodes, edges, decision points, human touchpoints) displayed
+  beside the image for one-glance human verification; the existing extraction
+  + validator then run against the verified transcription.
+- **Video / prototype:** pointer = timestamp or screen reference; same
+  pattern.
+
+Each reader is an adapter that renders a modality into a citable source
+document; extraction, validation, and human review are unchanged downstream.
+The strength hierarchy already prices modality correctly: a passing CI run
+grounds "demonstrated"; a diagram grounds at most "described" — a diagram
+describes an intention, it does not prove a working system.
+
+The current version reads the textual spine every submission carries (README,
+memo, write-up — the brief itself requires one); readers are the v2 ingestion
+layer for the artifacts behind the spine.
