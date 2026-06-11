@@ -1,0 +1,103 @@
+{
+  "submission_id": "CON-02",
+  "signals": [
+    {
+      "signal_id": "S1",
+      "evidence": [
+        {
+          "quote": "I configured the pipeline in Power Automate against an internal prompt library that I maintain.",
+          "strength": "described",
+          "note": "Reports hands-on configuration work and an asset the author maintains."
+        }
+      ],
+      "gaps": ["No linked or inspectable artifact; build activity is reported but not independently verifiable."],
+      "interview_probes": ["Could you walk us through the Power Automate workflow live, or share an export of it?"]
+    },
+    {
+      "signal_id": "S2",
+      "evidence": [
+        {
+          "quote": "The workflow runs in four steps: document ingestion, AI-drafted summary, adjuster review and correction, and supervisor sign-off for files above $50,000.",
+          "strength": "described",
+          "note": "Lays out a multi-step process with human review and a value-based escalation step."
+        },
+        {
+          "quote": "We defined at the outset that the system would never determine coverage or reserve amounts.",
+          "strength": "described",
+          "note": "States an explicit boundary on what the AI is permitted to decide."
+        }
+      ],
+      "gaps": [],
+      "interview_probes": ["What happens in the workflow when the AI-drafted summary is wrong — how does the failure path work?"]
+    },
+    {
+      "signal_id": "S3",
+      "evidence": [
+        {
+          "quote": "We trained the full team in two sessions, and adoption reached 12 of 14 adjusters by week six.",
+          "strength": "described",
+          "note": "Reports training delivery and a specific adoption level among intended users."
+        },
+        {
+          "quote": "their corrections reshaped the prompt twice before wider rollout",
+          "strength": "described",
+          "note": "Reports iteration on the system based on user feedback during the pilot."
+        }
+      ],
+      "gaps": ["Ongoing maintenance ownership after rollout is not described."],
+      "interview_probes": ["Who maintains the workflow today, and what has changed in it since rollout?"]
+    },
+    {
+      "signal_id": "S4",
+      "evidence": [
+        {
+          "quote": "I assumed the broker document formats were consistent; they were not.",
+          "strength": "described",
+          "note": "Names an explicit assumption and reports that it proved wrong."
+        },
+        {
+          "quote": "We added a format-normalization step in week two, which delayed the pilot by eight days but removed the largest source of drafting errors.",
+          "strength": "described",
+          "note": "Reports a corrective change, its cost, and its effect."
+        }
+      ],
+      "gaps": [],
+      "interview_probes": ["What other assumptions did you make at the start, and how did you test them?"]
+    },
+    {
+      "signal_id": "S5",
+      "evidence": [
+        {
+          "quote": "I brought the design to our risk committee before any build began, documented the data flows for privacy review, and agreed an audit sample of 5% of AI-drafted summaries reviewed monthly by quality assurance.",
+          "strength": "described",
+          "note": "Reports governance, privacy, and audit controls established before building."
+        },
+        {
+          "quote": "The quality audit found 2 material errors across 240 sampled summaries, both caught at adjuster review before any downstream impact.",
+          "strength": "described",
+          "note": "Reports measured error rates from the audit mechanism and where errors were caught."
+        }
+      ],
+      "gaps": [],
+      "interview_probes": ["How would the audit mechanism detect a slow drift in summary quality rather than individual errors?"]
+    },
+    {
+      "signal_id": "S6",
+      "evidence": [
+        {
+          "quote": "I shortlisted three candidate processes with the operations lead and chose intake summarization because it was high-volume, low-ambiguity, and carried no settlement authority.",
+          "strength": "described",
+          "note": "Reports problem selection with named criteria and a named stakeholder."
+        },
+        {
+          "quote": "Average intake time fell from 35 minutes to 14 minutes per file.",
+          "strength": "described",
+          "note": "States a specific before-and-after operational outcome."
+        }
+      ],
+      "gaps": [],
+      "interview_probes": ["How did you weigh the three candidate processes against each other before choosing?"]
+    }
+  ],
+  "extraction_warnings": ["Submission is a results memo; all evidence is reported account rather than inspectable artifact."]
+}

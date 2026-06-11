@@ -1,0 +1,102 @@
+{
+  "submission_id": "ENG-01",
+  "signals": [
+    {
+      "signal_id": "S1",
+      "evidence": [
+        {
+          "quote": "Built solo over six weeks; now running in our team's staging environment",
+          "strength": "demonstrated",
+          "note": "References a built system that currently runs in a named environment."
+        },
+        {
+          "quote": "Python 3.12, FastAPI, LangGraph, Postgres, GitHub Actions.",
+          "strength": "demonstrated",
+          "note": "Names the concrete stack used to build the system described in the document."
+        }
+      ],
+      "gaps": [],
+      "interview_probes": ["Could you walk us through the repository and run the system live?"]
+    },
+    {
+      "signal_id": "S2",
+      "evidence": [
+        {
+          "quote": "A routing agent proposes an assignment group; a human dispatcher approves or overrides every routing proposal before it is applied",
+          "strength": "demonstrated",
+          "note": "Describes an explicit human approval step between AI proposal and action."
+        },
+        {
+          "quote": "Classifier confidence below 0.7 falls back to the legacy keyword router",
+          "strength": "demonstrated",
+          "note": "Specifies a failure path with a defined threshold and fallback mechanism."
+        },
+        {
+          "quote": "Autonomy is limited to drafting, never to acting on production queues.",
+          "strength": "described",
+          "note": "States a deliberate boundary on the system's level of autonomy."
+        }
+      ],
+      "gaps": [],
+      "interview_probes": ["How did you decide where the human approval boundary should sit?"]
+    },
+    {
+      "signal_id": "S3",
+      "evidence": [
+        {
+          "quote": "with the dispatch team trialling it daily",
+          "strength": "described",
+          "note": "Reports that a real team uses the system on a daily basis."
+        },
+        {
+          "quote": "Staging only; production rollout pending change-board review",
+          "strength": "described",
+          "note": "States the current deployment stage and the step required for production use."
+        }
+      ],
+      "gaps": ["No production deployment or post-deployment maintenance is reported."],
+      "interview_probes": ["What is your plan for the change-board review and production rollout?"]
+    },
+    {
+      "signal_id": "S4",
+      "evidence": [],
+      "gaps": ["The document does not describe how the problem was scoped, what assumptions were made, or how the direction was chosen."],
+      "interview_probes": ["How did this project start — what was unclear at the beginning, and what did you assume to get moving?"]
+    },
+    {
+      "signal_id": "S5",
+      "evidence": [
+        {
+          "quote": "A nightly regression run executes in CI; deploys block if category F1 drops below 0.86",
+          "strength": "demonstrated",
+          "note": "Describes an automated evaluation gate tied to a defined quality threshold."
+        },
+        {
+          "quote": "Prompt changes require a passing eval run attached to the PR",
+          "strength": "demonstrated",
+          "note": "Describes a standing control applied to changes in AI behavior."
+        },
+        {
+          "quote": "No cost cap on the classifier loop yet (tracked in issue #41)",
+          "strength": "described",
+          "note": "Identifies an open risk in the system and notes that it is tracked."
+        }
+      ],
+      "gaps": [],
+      "interview_probes": ["Beyond accuracy, what risks did you consider for this system, and which controls exist for them?"]
+    },
+    {
+      "signal_id": "S6",
+      "evidence": [
+        {
+          "quote": "Mis-routed P1 tickets breach SLA.",
+          "strength": "described",
+          "note": "Connects the system's behavior to a named operational consequence."
+        }
+      ],
+      "gaps": ["No stakeholders, organizational constraints, or quantified value are described."],
+      "interview_probes": ["Who in the organization benefits from this system, and how would you state its value to them?"]
+    }
+  ],
+  "extraction_warnings": ["Submission is a technical README; organizational and problem-framing context is largely absent from the format."]
+}

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evidence Workbench — AI Builder Candidate Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2733; --ink-soft:#46555F; --paper:#F4F6F8; --panel:#FFFFFF;
+    --line:#D8DEE4; --blue:#1F4FBF; --blue-soft:#E8EEFB;
+    --mark:#FFE873; --mark-soft:#FFF6C9;
+    --green:#1F7A4D; --green-soft:#E3F2EA;
+    --amber:#B45309; --amber-soft:#FBEEDC;
+    --radius:10px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important} }
+  body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+  h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:650;letter-spacing:-.01em;margin:0}
+  button{font:inherit;cursor:pointer}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:4px}
+
+  header.site{background:var(--panel);border-bottom:1px solid var(--line);padding:22px 28px 0}
+  .masthead{max-width:1240px;margin:0 auto;display:flex;flex-wrap:wrap;gap:14px;align-items:baseline;justify-content:space-between}
+  .masthead h1{font-size:26px}
+  .masthead .sub{color:var(--ink-soft);font-size:14px}
+  .disclosure{max-width:1240px;margin:14px auto 0;background:var(--blue-soft);border:1px solid #C8D6F5;border-bottom:none;
+    border-radius:var(--radius) var(--radius) 0 0;padding:10px 16px;font-size:13.5px;color:#193A85;display:flex;gap:10px;align-items:flex-start}
+  .disclosure .tag{flex:none;background:var(--blue);color:#fff;font-size:11px;font-weight:600;letter-spacing:.06em;
+    padding:2px 8px;border-radius:99px;margin-top:1px}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:22px 28px 60px;display:grid;grid-template-columns:300px 1fr;gap:22px}
+  @media (max-width:980px){ .wrap{grid-template-columns:1fr} .rail{position:static} }
+
+  .rail{position:sticky;top:16px;align-self:start;display:flex;flex-direction:column;gap:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+  .rail h2{font-size:15px;margin-bottom:8px}
+  .sig{padding:9px 0;border-top:1px dashed var(--line);font-size:13px}
+  .sig:first-of-type{border-top:none}
+  .sig b{display:block;font-size:13.5px;color:var(--ink)}
+  .sig span{color:var(--ink-soft)}
+  .ground-badge{display:flex;gap:8px;align-items:center;background:var(--green-soft);border:1px solid #BBDCC9;
+    color:var(--green);border-radius:var(--radius);padding:10px 12px;font-size:13px;font-weight:600}
+  .ground-badge.fail{background:var(--amber-soft);border-color:#E9C9A0;color:var(--amber)}
+
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .tab{border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:8px 16px;font-weight:500;color:var(--ink-soft)}
+  .tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .tab .fmt{display:block;font-size:11px;font-weight:400;opacity:.75}
+  .order-note{font-size:12px;color:var(--ink-soft);margin:-6px 0 14px}
+
+  .sigblock{margin-bottom:14px}
+  .sigblock>header{display:flex;align-items:baseline;gap:10px;padding:4px 2px 8px}
+  .sigblock>header .sid{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--blue);font-weight:500}
+  .sigblock>header h3{font-size:16px}
+  .ev{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px}
+  .quote{font-family:"IBM Plex Mono",monospace;font-size:13.5px;line-height:1.6;background:linear-gradient(transparent 8%, var(--mark-soft) 8%, var(--mark-soft) 92%, transparent 92%);
+    box-decoration-break:clone;-webkit-box-decoration-break:clone;padding:1px 4px;border-radius:3px}
+  .ev .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+  .chip{font-size:11.5px;font-weight:600;letter-spacing:.04em;border-radius:99px;padding:3px 10px}
+  .chip.demonstrated{background:var(--ink);color:#fff}
+  .chip.described{background:transparent;border:1.5px solid var(--ink-soft);color:var(--ink-soft)}
+  .chip.asserted{background:transparent;border:1.5px dashed var(--ink-soft);color:var(--ink-soft)}
+  .stamp{font-size:11.5px;font-weight:600;color:var(--green);background:var(--green-soft);border-radius:99px;padding:3px 10px}
+  .stamp.bad{color:var(--amber);background:var(--amber-soft)}
+  .srclink{font-size:12.5px;color:var(--blue);background:none;border:none;text-decoration:underline;padding:0}
+  .ev .note{color:var(--ink-soft);font-size:13px;margin-top:8px}
+  .gapcard{border:1.5px dashed var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:8px;background:transparent}
+  .gapcard .gtitle{font-size:12px;font-weight:600;letter-spacing:.05em;color:var(--amber);text-transform:uppercase}
+  .gapcard p{margin:6px 0 0;font-size:13.5px;color:var(--ink-soft)}
+  .gapcard .probe{margin-top:8px;color:var(--ink);font-size:13.5px}
+  .gapcard .probe b{color:var(--amber)}
+
+  .decision{border-left:4px solid var(--blue)}
+  .decision h2{font-size:17px;margin-bottom:4px}
+  .decision .help{font-size:13px;color:var(--ink-soft);margin:0 0 12px}
+  .dec-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .dec-opt{border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:7px 14px;font-size:13.5px}
+  .dec-opt[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+  textarea{width:100%;min-height:84px;border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit;font-size:14px;resize:vertical}
+  .record{margin-top:10px;background:var(--ink);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-weight:600}
+  .record:disabled{background:var(--line);color:var(--ink-soft);cursor:not-allowed}
+  .req{font-size:12px;color:var(--amber);margin-top:6px}
+
+  .log table{width:100%;border-collapse:collapse;font-size:13px}
+  .log th,.log td{text-align:left;padding:8px 10px;border-top:1px solid var(--line);vertical-align:top}
+  .log th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);border-top:none}
+  .log .empty{color:var(--ink-soft);font-size:13.5px;padding:14px 2px}
+  .export{background:none;border:1px solid var(--line);border-radius:8px;padding:7px 14px;font-size:13px}
+
+  dialog{border:none;border-radius:12px;max-width:760px;width:92vw;max-height:84vh;padding:0;box-shadow:0 18px 60px rgba(20,32,45,.25)}
+  dialog::backdrop{background:rgba(20,32,45,.45)}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+  .modal-body{padding:18px 20px;overflow:auto;max-height:64vh;font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.7;white-space:pre-wrap}
+  .modal-body mark{background:var(--mark);padding:1px 2px;border-radius:3px}
+  .close{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px}
+
+  footer.site{border-top:1px solid var(--line);background:var(--panel);padding:18px 28px;font-size:12.5px;color:var(--ink-soft)}
+  footer.site .inner{max-width:1240px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 24px}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="masthead">
+    <h1>Evidence Workbench</h1>
+    <div class="sub">AI Builder candidate review · evidence extracted by AI · decided by humans</div>
+  </div>
+  <div class="disclosure" role="note">
+    <span class="tag">AI DISCLOSURE</span>
+    <span>AI is used in this process to extract and organize evidence from candidate submissions against job-derived signals.
+    It does not score, rank, compare, or recommend candidates. Every hiring judgment is made and recorded by a human reviewer.</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <aside class="rail" aria-label="Rubric and verification">
+    <div class="ground-badge" id="groundBadge" role="status">Checking evidence grounding…</div>
+    <div class="card">
+      <h2>Signal rubric — derived from the AI Builder job description</h2>
+      <div id="rubric"></div>
+    </div>
+    <div class="card" style="font-size:12.5px;color:var(--ink-soft)">
+      <b style="color:var(--ink)">How to read evidence strength</b><br>
+      <span class="chip demonstrated" style="margin:6px 4px 0 0">demonstrated</span> verifiable built thing or named concrete outcome<br>
+      <span class="chip described" style="margin:6px 4px 0 0">described</span> concrete first-person account, not independently verifiable<br>
+      <span class="chip asserted" style="margin:6px 4px 0 0">asserted</span> claim without supporting specifics<br><br>
+      A signal with no evidence produces an <b style="color:var(--amber)">interview probe</b>, never a penalty — absence of evidence in one submission format is not absence of skill.
+    </div>
+  </aside>
+
+  <main>
+    <div class="tabs" role="tablist" aria-label="Candidates" id="tabs"></div>
+    <p class="order-note">Candidate order is randomized on each load to reduce position anchoring.</p>
+    <section id="candidate"></section>
+
+    <div class="card decision" id="decisionCard">
+      <h2>Reviewer decision</h2>
+      <p class="help">The workbench surfaces evidence; this panel is where judgment happens. A written rationale is required before a decision can be recorded.</p>
+      <div class="dec-row" id="decOpts" role="group" aria-label="Decision"></div>
+      <label for="rationale" style="font-size:13px;font-weight:600">Rationale (required)</label>
+      <textarea id="rationale" placeholder="What in the evidence — or missing from it — drives your judgment? Reference signals, e.g. 'S5 demonstrated controls; S6 needs probing at interview.'"></textarea>
+      <div class="req" id="reqNote">Select a decision and write a rationale to enable recording.</div>
+      <button class="record" id="recordBtn" disabled>Record decision</button>
+    </div>
+
+    <div class="card log" style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <h2 style="font-size:16px">Decision log (audit trail)</h2>
+        <button class="export" id="exportBtn">Export log as JSON</button>
+      </div>
+      <div id="logBody"><p class="empty">No decisions recorded yet. Review the evidence above, then record your judgment — every entry is timestamped for audit.</p></div>
+    </div>
+  </main>
+</div>
+
+<dialog id="srcModal" aria-label="Submission source">
+  <div class="modal-head">
+    <h3 id="srcTitle" style="font-size:15px">Source</h3>
+    <button class="close" id="srcClose">Close</button>
+  </div>
+  <div class="modal-body" id="srcBody"></div>
+</dialog>
+
+<footer class="site">
+  <div class="inner">
+    <span><b>Provenance:</b> extraction prompt v1.0 (committed in repo) · designed for temperature-0 execution · outputs grounded by tools/validate_quotes.py</span>
+    <span><b>Data:</b> synthetic candidates only — no real or personal data</span>
+    <span><b>Storage:</b> decisions are held in memory for this session; use Export for records</span>
+  </div>
+</footer>
+
+<script>
+window.WORKBENCH_DATA = {"rubric": [{"id": "S1", "name": "Builder Evidence", "definition": "Makes real things, not descriptions of things — code, configuration, low-code, APIs, orchestration; tests and hardens what was built."}, {"id": "S2", "name": "Workflow & Systems Thinking", "definition": "Designs multi-step processes around the model: human-AI handoffs, decision boundaries, deliberate autonomy levels, failure paths."}, {"id": "S3", "name": "End-to-End Ownership", "definition": "Carries a problem from definition to a working system people actually use — deployment, adoption, maintenance included."}, {"id": "S4", "name": "Ambiguity → Direction", "definition": "Enters undefined problems, makes explicit assumptions, commits to a scoped direction, tests and iterates."}, {"id": "S5", "name": "Responsible AI Judgment", "definition": "Treats risk, governance, ethics and trust as design constraints; evaluates AI behavior rather than only shipping it."}, {"id": "S6", "name": "Enterprise Fluency & Value Targeting", "definition": "Understands how organizations operate; aims AI at pain points with tangible value; names stakeholders and constraints."}], "candidates": [{"id": "ENG-01", "label": "Candidate A", "format": "engineer · repo README", "source": "# triage-copilot\n\nAgentic ticket triage for an internal IT service desk. Built solo over six weeks; now running in our team's staging environment with the dispatch team trialling it daily.\n\n## What it does\n\n- Ingests new ServiceNow tickets via webhook\n- A classifier agent assigns category and urgency\n- A routing agent proposes an assignment group; a human dispatcher approves or overrides every routing proposal before it is applied\n- Classifier confidence below 0.7 falls back to the legacy keyword router\n\n## Why human approval is mandatory\n\nMis-routed P1 tickets breach SLA. The agent proposes; the dispatcher disposes. Autonomy is limited to drafting, never to acting on production queues.\n\n## Eval harness\n\n- 400 hand-labelled historical tickets live in /evals\n- A nightly regression run executes in CI; deploys block if category F1 drops below 0.86\n- Prompt changes require a passing eval run attached to the PR\n\n## Stack\n\nPython 3.12, FastAPI, LangGraph, Postgres, GitHub Actions.\n\n## Install\n\n```\npip install -r requirements.txt\nmake evals && make run\n```\n\n## Known limitations\n\n- No cost cap on the classifier loop yet (tracked in issue #41)\n- The eval set under-represents hardware tickets\n- Staging only; production rollout pending change-board review\n", "extraction": {"submission_id": "ENG-01", "signals": [{"signal_id": "S1", "evidence": [{"quote": "Built solo over six weeks; now running in our team's staging environment", "strength": "demonstrated", "note": "References a built system that currently runs in a named environment."}, {"quote": "Python 3.12, FastAPI, LangGraph, Postgres, GitHub Actions.", "strength": "demonstrated", "note": "Names the concrete stack used to build the system described in the document."}], "gaps": [], "interview_probes": ["Could you walk us through the repository and run the system live?"]}, {"signal_id": "S2", "evidence": [{"quote": "A routing agent proposes an assignment group; a human dispatcher approves or overrides every routing proposal before it is applied", "strength": "demonstrated", "note": "Describes an explicit human approval step between AI proposal and action."}, {"quote": "Classifier confidence below 0.7 falls back to the legacy keyword router", "strength": "demonstrated", "note": "Specifies a failure path with a defined threshold and fallback mechanism."}, {"quote": "Autonomy is limited to drafting, never to acting on production queues.", "strength": "described", "note": "States a deliberate boundary on the system's level of autonomy."}], "gaps": [], "interview_probes": ["How did you decide where the human approval boundary should sit?"]}, {"signal_id": "S3", "evidence": [{"quote": "with the dispatch team trialling it daily", "strength": "described", "note": "Reports that a real team uses the system on a daily basis."}, {"quote": "Staging only; production rollout pending change-board review", "strength": "described", "note": "States the current deployment stage and the step required for production use."}], "gaps": ["No production deployment or post-deployment maintenance is reported."], "interview_probes": ["What is your plan for the change-board review and production rollout?"]}, {"signal_id": "S4", "evidence": [], "gaps": ["The document does not describe how the problem was scoped, what assumptions were made, or how the direction was chosen."], "interview_probes": ["How did this project start — what was unclear at the beginning, and what did you assume to get moving?"]}, {"signal_id": "S5", "evidence": [{"quote": "A nightly regression run executes in CI; deploys block if category F1 drops below 0.86", "strength": "demonstrated", "note": "Describes an automated evaluation gate tied to a defined quality threshold."}, {"quote": "Prompt changes require a passing eval run attached to the PR", "strength": "demonstrated", "note": "Describes a standing control applied to changes in AI behavior."}, {"quote": "No cost cap on the classifier loop yet (tracked in issue #41)", "strength": "described", "note": "Identifies an open risk in the system and notes that it is tracked."}], "gaps": [], "interview_probes": ["Beyond accuracy, what risks did you consider for this system, and which controls exist for them?"]}, {"signal_id": "S6", "evidence": [{"quote": "Mis-routed P1 tickets breach SLA.", "strength": "described", "note": "Connects the system's behavior to a named operational consequence."}], "gaps": ["No stakeholders, organizational constraints, or quantified value are described."], "interview_probes": ["Who in the organization benefits from this system, and how would you state its value to them?"]}], "extraction_warnings": ["Submission is a technical README; organizational and problem-framing context is largely absent from the format."]}}, {"id": "CON-02", "label": "Candidate B", "format": "consultant · results memo", "source": "INTERNAL MEMO\nTo: Operations Steering Committee\nRe: AI-assisted claims intake summarization — design, rollout, and 90-day results\n\nBackground. Our claims intake team of 14 adjusters spent an average of 35 minutes per file assembling first-notice-of-loss summaries from inconsistent broker documents. I proposed and led the workflow described below.\n\n1. Problem selection. I shortlisted three candidate processes with the operations lead and chose intake summarization because it was high-volume, low-ambiguity, and carried no settlement authority. Processes touching coverage decisions were excluded from scope at the outset.\n\n2. Workflow design. The workflow runs in four steps: document ingestion, AI-drafted summary, adjuster review and correction, and supervisor sign-off for files above $50,000. The AI drafts; the adjuster owns the file. We defined at the outset that the system would never determine coverage or reserve amounts. I configured the pipeline in Power Automate against an internal prompt library that I maintain.\n\n3. Governance. I brought the design to our risk committee before any build began, documented the data flows for privacy review, and agreed an audit sample of 5% of AI-drafted summaries reviewed monthly by quality assurance.\n\n4. Change management. Two adjusters piloted the workflow for three weeks; their corrections reshaped the prompt twice before wider rollout. We trained the full team in two sessions, and adoption reached 12 of 14 adjusters by week six.\n\n5. Results. Average intake time fell from 35 minutes to 14 minutes per file. The quality audit found 2 material errors across 240 sampled summaries, both caught at adjuster review before any downstream impact.\n\n6. What I would do differently. I assumed the broker document formats were consistent; they were not. We added a format-normalization step in week two, which delayed the pilot by eight days but removed the largest source of drafting errors.\n\nRecommendation. Extend the pattern to subrogation intake next quarter, with the same human-ownership boundary and audit sampling.\n", "extraction": {"submission_id": "CON-02", "signals": [{"signal_id": "S1", "evidence": [{"quote": "I configured the pipeline in Power Automate against an internal prompt library that I maintain.", "strength": "described", "note": "Reports hands-on configuration work and an asset the author maintains."}], "gaps": ["No linked or inspectable artifact; build activity is reported but not independently verifiable."], "interview_probes": ["Could you walk us through the Power Automate workflow live, or share an export of it?"]}, {"signal_id": "S2", "evidence": [{"quote": "The workflow runs in four steps: document ingestion, AI-drafted summary, adjuster review and correction, and supervisor sign-off for files above $50,000.", "strength": "described", "note": "Lays out a multi-step process with human review and a value-based escalation step."}, {"quote": "We defined at the outset that the system would never determine coverage or reserve amounts.", "strength": "described", "note": "States an explicit boundary on what the AI is permitted to decide."}], "gaps": [], "interview_probes": ["What happens in the workflow when the AI-drafted summary is wrong — how does the failure path work?"]}, {"signal_id": "S3", "evidence": [{"quote": "We trained the full team in two sessions, and adoption reached 12 of 14 adjusters by week six.", "strength": "described", "note": "Reports training delivery and a specific adoption level among intended users."}, {"quote": "their corrections reshaped the prompt twice before wider rollout", "strength": "described", "note": "Reports iteration on the system based on user feedback during the pilot."}], "gaps": ["Ongoing maintenance ownership after rollout is not described."], "interview_probes": ["Who maintains the workflow today, and what has changed in it since rollout?"]}, {"signal_id": "S4", "evidence": [{"quote": "I assumed the broker document formats were consistent; they were not.", "strength": "described", "note": "Names an explicit assumption and reports that it proved wrong."}, {"quote": "We added a format-normalization step in week two, which delayed the pilot by eight days but removed the largest source of drafting errors.", "strength": "described", "note": "Reports a corrective change, its cost, and its effect."}], "gaps": [], "interview_probes": ["What other assumptions did you make at the start, and how did you test them?"]}, {"signal_id": "S5", "evidence": [{"quote": "I brought the design to our risk committee before any build began, documented the data flows for privacy review, and agreed an audit sample of 5% of AI-drafted summaries reviewed monthly by quality assurance.", "strength": "described", "note": "Reports governance, privacy, and audit controls established before building."}, {"quote": "The quality audit found 2 material errors across 240 sampled summaries, both caught at adjuster review before any downstream impact.", "strength": "described", "note": "Reports measured error rates from the audit mechanism and where errors were caught."}], "gaps": [], "interview_probes": ["How would the audit mechanism detect a slow drift in summary quality rather than individual errors?"]}, {"signal_id": "S6", "evidence": [{"quote": "I shortlisted three candidate processes with the operations lead and chose intake summarization because it was high-volume, low-ambiguity, and carried no settlement authority.", "strength": "described", "note": "Reports problem selection with named criteria and a named stakeholder."}, {"quote": "Average intake time fell from 35 minutes to 14 minutes per file.", "strength": "described", "note": "States a specific before-and-after operational outcome."}], "gaps": [], "interview_probes": ["How did you weigh the three candidate processes against each other before choosing?"]}], "extraction_warnings": ["Submission is a results memo; all evidence is reported account rather than inspectable artifact."]}}, {"id": "STB-03", "label": "Candidate C", "format": "self-taught · portfolio narrative", "source": "PORTFOLIO NOTE — what I built and what it taught me\n\nI didn't come to this through a computer science degree. I run operations for a regional courier business, and I got tired of watching our dispatcher spend the first ninety minutes of every morning copying driver availability out of text messages into a route spreadsheet.\n\nSo I built the thing myself. I taught myself Python from the standard library docs and a long trail of failed attempts. The system today is a WhatsApp check-in bot connected to a route sheet generator. Drivers reply to one morning message; the bot reads their availability, drafts the day's route sheet, and posts it to the dispatch channel.\n\nAll nine drivers have used it every morning since March. It saves us roughly an hour of dispatcher time every day, which during peak season is the difference between answering the phone and not.\n\nThe part I'm most proud of is what I removed. My first version tried to fully automate route assignment. Drivers ignored it within a week because it didn't know what they knew about traffic, loading docks, and which customers tolerate a late window. I rebuilt it so the bot drafts the route sheet and our dispatcher rearranges it by hand before sending. Draft, don't decide. Adoption followed almost immediately.\n\nI learn by keeping my mistakes visible. When the bot gets an address wrong I screenshot it into a folder I review on Sundays, and the worst ones become test cases for the parser. It is not a formal evaluation process, but it is the reason the address errors have nearly stopped.\n\nWhat I'd build next: the bot still has no guardrail for a driver replying with something ambiguous, and right now it guesses. It should ask. That is the next thing I fix.\n", "extraction": {"submission_id": "STB-03", "signals": [{"signal_id": "S1", "evidence": [{"quote": "The system today is a WhatsApp check-in bot connected to a route sheet generator.", "strength": "described", "note": "Describes the components of a system the author built."}, {"quote": "I taught myself Python from the standard library docs and a long trail of failed attempts.", "strength": "described", "note": "Reports how the author acquired the skills used to build the system."}], "gaps": ["No repository, demo link, or other inspectable artifact is provided."], "interview_probes": ["Could you show us the bot and route sheet generator running?"]}, {"signal_id": "S2", "evidence": [{"quote": "I rebuilt it so the bot drafts the route sheet and our dispatcher rearranges it by hand before sending.", "strength": "described", "note": "Describes a redesigned process with an explicit human step between AI draft and action."}], "gaps": ["Failure paths and escalation behavior are only partially described."], "interview_probes": ["What does the system do today when a driver's reply cannot be parsed?"]}, {"signal_id": "S3", "evidence": [{"quote": "All nine drivers have used it every morning since March.", "strength": "demonstrated", "note": "States a specific, ongoing usage outcome among the system's intended users."}], "gaps": [], "interview_probes": ["What broke after launch, and how did you handle it?"]}, {"signal_id": "S4", "evidence": [{"quote": "My first version tried to fully automate route assignment. Drivers ignored it within a week because it didn't know what they knew about traffic, loading docks, and which customers tolerate a late window.", "strength": "described", "note": "Reports an initial direction, the observed failure, and the reason identified."}], "gaps": [], "interview_probes": ["How did you decide what to try first when nothing about the solution was defined yet?"]}, {"signal_id": "S5", "evidence": [{"quote": "When the bot gets an address wrong I screenshot it into a folder I review on Sundays, and the worst ones become test cases for the parser.", "strength": "described", "note": "Reports an informal but recurring process for reviewing errors and converting them into tests."}, {"quote": "the bot still has no guardrail for a driver replying with something ambiguous, and right now it guesses. It should ask.", "strength": "described", "note": "Identifies an open risk in the system's behavior and states the intended control."}], "gaps": ["No formal evaluation, governance, or privacy considerations are described."], "interview_probes": ["If this system handled customer data at a larger company, what would you add before relying on it?"]}, {"signal_id": "S6", "evidence": [{"quote": "It saves us roughly an hour of dispatcher time every day, which during peak season is the difference between answering the phone and not.", "strength": "described", "note": "States the operational value of the system in concrete terms."}], "gaps": ["Experience is within a small organization; multi-stakeholder enterprise constraints are not described."], "interview_probes": ["How do you think this approach would change inside a large, regulated organization?"]}], "extraction_warnings": ["Submission is a first-person narrative; technical specifics are present but sparse relative to the other formats."]}}]};
+(function(){
+  const D = window.WORKBENCH_DATA;
+  const $ = (s,el)=> (el||document).querySelector(s);
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  /* ---------- rubric rail ---------- */
+  $("#rubric").innerHTML = D.rubric.map(r =>
+    `<div class="sig"><b>${r.id} · ${esc(r.name)}</b><span>${esc(r.definition)}</span></div>`).join("");
+
+  /* ---------- grounding check (in-browser, deterministic) ---------- */
+  let total=0, bad=0;
+  const grounded = {};
+  D.candidates.forEach(c=>{
+    grounded[c.id]={};
+    c.extraction.signals.forEach(sig=>sig.evidence.forEach((ev,i)=>{
+      total++; const ok = c.source.includes(ev.quote);
+      grounded[c.id][sig.signal_id+"_"+i]=ok; if(!ok) bad++;
+    }));
+  });
+  const badge=$("#groundBadge");
+  if(bad===0){ badge.textContent = "✓ Grounding check: all "+total+" evidence quotes verified verbatim against their sources"; }
+  else { badge.classList.add("fail"); badge.textContent = "⚠ Grounding check: "+bad+" of "+total+" quotes failed verbatim match — inspect before trusting"; }
+
+  /* ---------- candidates: randomized order ---------- */
+  const order=[...D.candidates].sort(()=>Math.random()-0.5);
+  let active=order[0].id;
+  const decisions={}; // per candidate working state
+  const log=[];
+
+  function renderTabs(){
+    $("#tabs").innerHTML = order.map(c=>
+      `<button class="tab" role="tab" aria-selected="${c.id===active}" data-id="${c.id}">${esc(c.label)}<span class="fmt">${esc(c.format)}</span></button>`).join("");
+    $("#tabs").querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{active=t.dataset.id;renderAll();}));
+  }
+
+  function renderCandidate(){
+    const c = D.candidates.find(x=>x.id===active);
+    $("#candidate").innerHTML = c.extraction.signals.map(sig=>{
+      const r = D.rubric.find(x=>x.id===sig.signal_id);
+      const evs = sig.evidence.map((ev,i)=>{
+        const ok = grounded[c.id][sig.signal_id+"_"+i];
+        return `<div class="ev">
+          <span class="quote">“${esc(ev.quote)}”</span>
+          <div class="meta">
+            <span class="chip ${ev.strength}">${ev.strength}</span>
+            <span class="stamp ${ok?'':'bad'}">${ok?'✓ grounded in source':'⚠ not found in source'}</span>
+            <button class="srclink" data-cid="${c.id}" data-q="${encodeURIComponent(ev.quote)}">view in source</button>
+          </div>
+          <div class="note">${esc(ev.note)}</div>
+        </div>`;}).join("");
+      const gap = sig.evidence.length===0
+        ? `<div class="gapcard"><div class="gtitle">No evidence found — a question, not a penalty</div>
+            <p>${esc(sig.gaps[0]||"This submission format did not surface evidence for this signal.")}</p>
+            <div class="probe"><b>Ask at interview:</b> ${esc(sig.interview_probes[0]||"")}</div></div>`
+        : (sig.gaps.length? `<div class="gapcard"><div class="gtitle">Gap to probe</div>
+            <p>${esc(sig.gaps[0])}</p>
+            <div class="probe"><b>Ask at interview:</b> ${esc(sig.interview_probes[0]||"")}</div></div>` : "");
+      return `<div class="sigblock"><header><span class="sid">${sig.signal_id}</span><h3>${esc(r.name)}</h3></header>${evs}${gap}</div>`;
+    }).join("");
+    $("#candidate").querySelectorAll(".srclink").forEach(b=>b.addEventListener("click",()=>openSource(b.dataset.cid, decodeURIComponent(b.dataset.q))));
+  }
+
+  /* ---------- source modal ---------- */
+  function openSource(cid, quote){
+    const c=D.candidates.find(x=>x.id===cid);
+    $("#srcTitle").textContent = c.label+" — full submission ("+c.format+")";
+    let body=esc(c.source);
+    if(quote){ const q=esc(quote); body=body.split(q).join("<mark>"+q+"</mark>"); }
+    $("#srcBody").innerHTML=body;
+    $("#srcModal").showModal();
+    const m=$("#srcBody mark"); if(m) m.scrollIntoView({block:"center"});
+  }
+  $("#srcClose").addEventListener("click",()=>$("#srcModal").close());
+
+  /* ---------- decision panel ---------- */
+  const OPTS=["Advance to interview","Hold — gather more evidence","Decline"];
+  function renderDecision(){
+    const st=decisions[active]||(decisions[active]={choice:null,rationale:""});
+    $("#decOpts").innerHTML=OPTS.map(o=>`<button class="dec-opt" aria-pressed="${st.choice===o}" data-o="${o}">${o}</button>`).join("");
+    $("#decOpts").querySelectorAll(".dec-opt").forEach(b=>b.addEventListener("click",()=>{st.choice=b.dataset.o;renderDecision();}));
+    $("#rationale").value=st.rationale;
+    sync();
+  }
+  function sync(){
+    const st=decisions[active];
+    const ready = st && st.choice && $("#rationale").value.trim().length>=20;
+    $("#recordBtn").disabled=!ready;
+    $("#reqNote").textContent = ready ? "Ready to record." :
+      (st&&st.choice ? "Rationale must be at least 20 characters — judgment needs words." :
+                       "Select a decision and write a rationale to enable recording.");
+  }
+  $("#rationale").addEventListener("input",()=>{ (decisions[active]||{}).rationale=$("#rationale").value; sync(); });
+  $("#recordBtn").addEventListener("click",()=>{
+    const st=decisions[active];
+    log.push({candidate:active, decision:st.choice, rationale:$("#rationale").value.trim(),
+              reviewer:"(this session)", timestamp:new Date().toISOString()});
+    st.choice=null; st.rationale=""; renderDecision(); renderLog();
+  });
+
+  function renderLog(){
+    if(!log.length){ $("#logBody").innerHTML='<p class="empty">No decisions recorded yet. Review the evidence above, then record your judgment — every entry is timestamped for audit.</p>'; return; }
+    $("#logBody").innerHTML = `<table><tr><th>When (UTC)</th><th>Candidate</th><th>Decision</th><th>Rationale</th></tr>`+
+      log.map(e=>`<tr><td>${e.timestamp.replace("T"," ").slice(0,19)}</td><td>${esc(e.candidate)}</td><td>${esc(e.decision)}</td><td>${esc(e.rationale)}</td></tr>`).join("")+`</table>`;
+  }
+  $("#exportBtn").addEventListener("click",()=>{
+    const blob=new Blob([JSON.stringify({exported:new Date().toISOString(),entries:log},null,2)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="decision_log.json"; a.click();
+  });
+
+  function renderAll(){ renderTabs(); renderCandidate(); renderDecision(); }
+  renderAll(); renderLog();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+{
+  "submission_id": "STB-03",
+  "signals": [
+    {
+      "signal_id": "S1",
+      "evidence": [
+        {
+          "quote": "The system today is a WhatsApp check-in bot connected to a route sheet generator.",
+          "strength": "described",
+          "note": "Describes the components of a system the author built."
+        },
+        {
+          "quote": "I taught myself Python from the standard library docs and a long trail of failed attempts.",
+          "strength": "described",
+          "note": "Reports how the author acquired the skills used to build the system."
+        }
+      ],
+      "gaps": ["No repository, demo link, or other inspectable artifact is provided."],
+      "interview_probes": ["Could you show us the bot and route sheet generator running?"]
+    },
+    {
+      "signal_id": "S2",
+      "evidence": [
+        {
+          "quote": "I rebuilt it so the bot drafts the route sheet and our dispatcher rearranges it by hand before sending.",
+          "strength": "described",
+          "note": "Describes a redesigned process with an explicit human step between AI draft and action."
+        }
+      ],
+      "gaps": ["Failure paths and escalation behavior are only partially described."],
+      "interview_probes": ["What does the system do today when a driver's reply cannot be parsed?"]
+    },
+    {
+      "signal_id": "S3",
+      "evidence": [
+        {
+          "quote": "All nine drivers have used it every morning since March.",
+          "strength": "demonstrated",
+          "note": "States a specific, ongoing usage outcome among the system's intended users."
+        }
+      ],
+      "gaps": [],
+      "interview_probes": ["What broke after launch, and how did you handle it?"]
+    },
+    {
+      "signal_id": "S4",
+      "evidence": [
+        {
+          "quote": "My first version tried to fully automate route assignment. Drivers ignored it within a week because it didn't know what they knew about traffic, loading docks, and which customers tolerate a late window.",
+          "strength": "described",
+          "note": "Reports an initial direction, the observed failure, and the reason identified."
+        }
+      ],
+      "gaps": [],
+      "interview_probes": ["How did you decide what to try first when nothing about the solution was defined yet?"]
+    },
+    {
+      "signal_id": "S5",
+      "evidence": [
+        {
+          "quote": "When the bot gets an address wrong I screenshot it into a folder I review on Sundays, and the worst ones become test cases for the parser.",
+          "strength": "described",
+          "note": "Reports an informal but recurring process for reviewing errors and converting them into tests."
+        },
+        {
+          "quote": "the bot still has no guardrail for a driver replying with something ambiguous, and right now it guesses. It should ask.",
+          "strength": "described",
+          "note": "Identifies an open risk in the system's behavior and states the intended control."
+        }
+      ],
+      "gaps": ["No formal evaluation, governance, or privacy considerations are described."],
+      "interview_probes": ["If this system handled customer data at a larger company, what would you add before relying on it?"]
+    },
+    {
+      "signal_id": "S6",
+      "evidence": [
+        {
+          "quote": "It saves us roughly an hour of dispatcher time every day, which during peak season is the difference between answering the phone and not.",
+          "strength": "described",
+          "note": "States the operational value of the system in concrete terms."
+        }
+      ],
+      "gaps": ["Experience is within a small organization; multi-stakeholder enterprise constraints are not described."],
+      "interview_probes": ["How do you think this approach would change inside a large, regulated organization?"]
+    }
+  ],
+  "extraction_warnings": ["Submission is a first-person narrative; technical specifics are present but sparse relative to the other formats."]
+}

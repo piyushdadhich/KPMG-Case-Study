@@ -1,0 +1,3 @@
+# Pin LF for all text so build.py's LF output stays byte-reproducible
+# across platforms (avoids autocrlf rewriting index.html on checkout).
+* text=auto eol=lf
